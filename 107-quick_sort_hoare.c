@@ -13,8 +13,8 @@ void swap(int *n1, int *n2)
 }
 
 /**
- * l_partition - Order a subset of an array of integers according to
- * the lomuto partition scheme, using the last element as pivot.
+ * h_partition - Order a subset of an array of integers according to
+ * the hoare partition scheme, using the last element as pivot.
  * @array: The array of integers.
  * @size: Array's size.
  * @l: Partition's left side.
@@ -22,36 +22,33 @@ void swap(int *n1, int *n2)
  *
  * Return: The final partition index.
  */
-int l_partition(int *array, size_t size, int l, int r)
+int h_partition(int *array, size_t size, int l, int r)
 {
-	int *pivot = array + r;
-	int above = l;
-	int below = l;
+	int pivot = *(array + r);
+	int above = l - 1;
+	int below = r + 1;
 
-	for (; below < r; below++)
+	while (above < below)
 	{
-		if (array[below] < *pivot)
-		{
-			if (above < below)
-			{
-				swap(array + below, array + above);
-				print_array(array, size);
-			}
+		do {
 			above++;
-		}
-	}
+		} while (array[above] < pivot);
+		do {
+			below--;
+		} while (array[below] > pivot);
 
-	if (array[above] > *pivot)
-	{
-		swap(array + above, pivot);
-		print_array(array, size);
+		if (above < below)
+		{
+			swap(array + above, array + below);
+			print_array(array, size);
+		}
 	}
 
 	return (above);
 }
 
 /**
- * quick_sort_rec - Quicksort algorithm with recursion and use the Lomuto
+ * quick_sort_rec - Quicksort algorithm with recursion and use the Hoare
  * partition scheme.
  * @array: Array of integers to sort.
  * @size: Array's size.
@@ -64,19 +61,19 @@ void quick_sort_rec(int *array, size_t size, int l, int r)
 
 	if (r - l > 0)
 	{
-		part = l_partition(array, size, l, r);
+		part = h_partition(array, size, l, r);
 		quick_sort_rec(array, size, l, part - 1);
-		quick_sort_rec(array, size, part + 1, r);
+		quick_sort_rec(array, size, part, r);
 	}
 }
 
 /**
- * quick_sort - Sorts an array of integers in ascending order using
- * the Quick sort algorithm.
+ * quick_sort_hoare - Sorts an array of integers in ascending order using
+ * the Quick sort algorithm with hoare scheme.
  * @array: Array of integers.
  * @size: Array's size.
  */
-void quick_sort(int *array, size_t size)
+void quick_sort_hoare(int *array, size_t size)
 {
 	if (array == NULL || size < 2)
 		return;
